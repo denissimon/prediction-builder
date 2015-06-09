@@ -1,0 +1,18 @@
+{
+	"name":        "denissimon/prediction-builder",
+	"description": "A library for machine learning that builds predictions using a linear regression.",
+	"keywords":    ["prediction", "regression", "machine learning"],
+	"license":     "MIT",
+	"authors":     [{
+		"name":  "Denis Simon",
+		"email": "hellodenissimon@gmail.com"
+	}],
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"PredictionBuilder\\": "src"
+		}
+	}
+}
