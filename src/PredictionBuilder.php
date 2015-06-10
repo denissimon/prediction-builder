@@ -20,7 +20,7 @@ trait readData {
      */
     public function readFromArray(array $data) {
         $callback =
-        function ($v, $k) use ($data) {
+        function ($v) use ($data) {
             if ((!isset($v[0])) || (!isset($v[1]))) {
                 throw new \RuntimeException('Mismatch in the number of x and y in a data set.');
             } else {
@@ -79,7 +79,7 @@ class PredictionBuilder {
      */
     private function sumX(array $xVector) {
         $sumX = 0;
-        foreach ($xVector as $key=>$value) {
+        foreach ($xVector as $value) {
             $sumX += $value;
         }
         return $sumX;
@@ -94,7 +94,7 @@ class PredictionBuilder {
      */
     private function sumY(array $yVector) {
         $sumY = 0;
-        foreach ($yVector as $key=>$value) {
+        foreach ($yVector as $value) {
             $sumY += $value;
         }
         return $sumY;
@@ -109,7 +109,7 @@ class PredictionBuilder {
      */
     private function sumXY(array $data) {
         $sumXY = 0;
-        foreach ($data as $key=>$value) {
+        foreach ($data as $value) {
             $sumXY += $value[0] * $value[1];
         }
         return $sumXY;
@@ -124,7 +124,7 @@ class PredictionBuilder {
      */
     private function sumXSquared(array $xVector) {
         $sumXSquared = 0;
-        foreach ($xVector as $key=>$value) {
+        foreach ($xVector as $value) {
             $sumXSquared += $this->square($value);
         }
         return $sumXSquared;
@@ -139,7 +139,7 @@ class PredictionBuilder {
      */
     private function sumYSquared(array $yVector) {
         $sumYSquared = 0;
-        foreach ($yVector as $key=>$value) {
+        foreach ($yVector as $value) {
             $sumYSquared += $this->square($value);
         }
         return $sumYSquared;
