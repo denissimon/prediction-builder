@@ -5,7 +5,8 @@
 	"license":     "MIT",
 	"authors":     [{
 		"name":  "Denis Simon",
-		"email": "hellodenissimon@gmail.com"
+		"email": "hellodenissimon@gmail.com",
+		"role":  "Developer"
 	}],
 	"require": {
 		"php": ">=5.4.0"
