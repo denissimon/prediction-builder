@@ -44,7 +44,7 @@ class PredictionBuilder {
     /**
      * Constructor
      *
-     * @param integer|float $x
+     * @param number $x
      * @param array $data
      */
     public function __construct($x, array $data) {
@@ -75,7 +75,7 @@ class PredictionBuilder {
      * 
      * @param array $xVector
      * 
-     * @return float|integer
+     * @return number
      */
     private function sumX(array $xVector) {
         $sumX = 0;
@@ -90,7 +90,7 @@ class PredictionBuilder {
      *
      * @param array $yVector
      * 
-     * @return float|integer
+     * @return number
      */
     private function sumY(array $yVector) {
         $sumY = 0;
@@ -105,7 +105,7 @@ class PredictionBuilder {
      *
      * @param array $data
      *
-     * @return float|integer
+     * @return number
      */
     private function sumXY(array $data) {
         $sumXY = 0;
@@ -120,7 +120,7 @@ class PredictionBuilder {
      *
      * @param array $xVector
      * 
-     * @return float|integer
+     * @return number
      */
     private function sumXSquared(array $xVector) {
         $sumXSquared = 0;
@@ -135,7 +135,7 @@ class PredictionBuilder {
      *
      * @param array $yVector
      * 
-     * @return float|integer
+     * @return number
      */
     private function sumYSquared(array $yVector) {
         $sumYSquared = 0;
@@ -146,9 +146,9 @@ class PredictionBuilder {
     }
     
     /**
-     * @param float|integer $value
+     * @param number $value
      * 
-     * @return float|integer
+     * @return number
      */
     private function square($value) {
         return $value * $value;
@@ -158,7 +158,7 @@ class PredictionBuilder {
      * Dispersion of x
      * Dx = (ΣX2 / N) - (ΣX / N)2
      *
-     * @return float|integer
+     * @return number
      */
     private function xDispersion () {
         return 
@@ -170,7 +170,7 @@ class PredictionBuilder {
      * Dispersion of y
      * Dy = (Σy2 / N) - (Σy / N)2
      *
-     * @return float|integer
+     * @return number
      */
     private function yDispersion () {
         return 
@@ -223,7 +223,7 @@ class PredictionBuilder {
      * @param float $a
      * @param float $b
      * 
-     * @return Closure
+     * @return callable
      */
     private function createModel($a, $b)
     {
