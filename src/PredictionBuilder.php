@@ -2,7 +2,7 @@
 /**
  * PredictionBuilder - A library for machine learning that builds predictions using a linear regression.
  *
- * @author   Denis Simon <hellodenissimon@gmail.com>
+ * @author   Denis Simon <denis.v.simon@gmail.com>
  *
  * @license  Licensed under MIT (https://github.com/denissimon/prediction-builder/blob/master/LICENSE)
  */
@@ -10,19 +10,19 @@
 namespace PredictionBuilder;
 
 trait readData {
-    
-    /**
-     * Reading the data from an array
+	
+	/**
+     * Reads the data from a given array
      * 
      * @param array $data
      *
-     * @throws \RuntimeException
+	 * @throws \InvalidArgumentException
      */
     public function readFromArray(array $data) {
         $callback =
         function ($v) use ($data) {
             if ((!isset($v[0])) || (!isset($v[1]))) {
-                throw new \RuntimeException('Mismatch in the number of x and y in a data set.');
+                throw new \InvalidArgumentException('Mismatch in the number of x and y in a data set.');
             } else {
             	$this->xVector[] = $v[0];
             	$this->yVector[] = $v[1];
@@ -33,7 +33,8 @@ trait readData {
 }
 
 class PredictionBuilder {
-    protected $x = 0;
+    
+	protected $x = 0;
     protected $data = [];
     protected $xVector = [];
     protected $yVector = [];
@@ -48,8 +49,8 @@ class PredictionBuilder {
      * @param array $data
      */
     public function __construct($x, array $data) {
-        if (is_numeric($x))
-            $this->x = (float)$x;
+        if (is_numeric($x)) 
+		    $this->x = (float) $x;
         if (is_array($data))
             $this->data = $data;
 
@@ -62,132 +63,89 @@ class PredictionBuilder {
      * 
      * @param string $name
      * @param array  $arguments
-     * 
-     * @throws Exception when the method doesn't exist
+     *
+	 * @throws \Exception when the method doesn't exist
      */
     public function __call($name, $arguments)
     {
-    	throw new \Exception("No such method exists: $name (".implode(', ', $arguments).")");
+        throw new \Exception("No such method exists: $name (".implode(', ', $arguments).")");
+    }
+	
+	/**
+	 * @param number $v
+     *
+	 * @return number
+     */
+    private function square($v) {
+        return $v * $v;
     }
 	
     /** 
-     * Sum of the x values
+     * Sum of the vector values
      * 
-     * @param array $xVector
-     * 
-     * @return number
-     */
-    private function sumX(array $xVector) {
-        $sumX = 0;
-        foreach ($xVector as $value) {
-            $sumX += $value;
-        }
-        return $sumX;
-    }
-
-    /** 
-     * Sum the y values
+     * @param array $vector
      *
-     * @param array $yVector
-     * 
-     * @return number
+	 * @return number
      */
-    private function sumY(array $yVector) {
-        $sumY = 0;
-        foreach ($yVector as $value) {
-            $sumY += $value;
-        }
-        return $sumY;
+    private function sum(array $vector) {
+	    return array_reduce(
+	        $vector, 
+	        function($v, $w) { return $v + $w; }
+	    );
     }
     
+	/** 
+     * Sum of the vector squared values
+     *
+     * @param array $vector
+     *
+	 * @return number
+     */
+    private function sumSquared(array $vector) {
+        return array_reduce(
+	        $vector, 
+	        function($v, $w) { return $v += $this->square($w); }
+	    );
+    }
+	
     /* 
      * Sum of the product of x and y
      *
      * @param array $data
      *
-     * @return number
+	 * @return number
      */
     private function sumXY(array $data) {
-        $sumXY = 0;
-        foreach ($data as $value) {
-            $sumXY += $value[0] * $value[1];
-        }
-        return $sumXY;
-    }
-
-    /** 
-     * Sum of x squared values
-     *
-     * @param array $xVector
-     * 
-     * @return number
-     */
-    private function sumXSquared(array $xVector) {
-        $sumXSquared = 0;
-        foreach ($xVector as $value) {
-            $sumXSquared += $this->square($value);
-        }
-        return $sumXSquared;
-    }
-    
-    /** 
-     * Sum of y squared values
-     *
-     * @param array $yVector
-     * 
-     * @return number
-     */
-    private function sumYSquared(array $yVector) {
-        $sumYSquared = 0;
-        foreach ($yVector as $value) {
-            $sumYSquared += $this->square($value);
-        }
-        return $sumYSquared;
+        return array_reduce(
+	        $data, 
+	        function($v, $w) { return $v += $w[0] * $w[1]; }
+	    );
     }
     
     /**
-     * @param number $value
-     * 
-     * @return number
-     */
-    private function square($value) {
-        return $value * $value;
-    }
-    
-    /**
-     * Dispersion of x
-     * Dx = (ΣX2 / N) - (ΣX / N)2
+     * The dispersion
+     * Dv = (Σv2 / N) - (Σv / N)2
      *
+	 * @param string $v 'x' or 'y'
+	 *
      * @return number
      */
-    private function xDispersion () {
-        return 
-        (($this->sumXSquared($this->xVector)/$this->count) - 
-        $this->square($this->sumX($this->xVector)/$this->count));
-    }
-    
-    /**
-     * Dispersion of y
-     * Dy = (Σy2 / N) - (Σy / N)2
-     *
-     * @return number
-     */
-    private function yDispersion () {
-        return 
-        (($this->sumYSquared($this->yVector)/$this->count) - 
-        $this->square($this->sumY($this->yVector)/$this->count));
+    private function dispersion($v) {
+        return (($this->sumSquared($this->{$v.'Vector'}) / $this->count) - 
+        $this->square($this->sum($this->{$v.'Vector'}) / $this->count));
     }
     
     /**
      * The intercept
      * a = (ΣY - b(ΣX)) / N
+	 *
+	 * @param float $b
      *
-     * @return float
+	 * @return float
      */
-    private function aIntercept ($b) {
-        return
-        (float)($this->sumY($this->yVector)/$this->count) - 
-        ($b * ($this->sumX($this->xVector)/$this->count));
+    private function aIntercept($b) {
+        return (float) ($this->sum($this->yVector) / $this->count) - 
+        ($b * ($this->sum($this->xVector) / $this->count));
     }
     
     /**
@@ -196,12 +154,11 @@ class PredictionBuilder {
      *
      * @return float
      */
-    private function bSlope () {
-        return 
-        (float)(($this->sumXY($this->data)/$this->count) - 
-        (($this->sumX($this->xVector)/$this->count) * 
-        ($this->sumY($this->yVector)/$this->count))) /
-        $this->xDispersion();
+    private function bSlope() {
+        return (float) (($this->sumXY($this->data) / $this->count) - 
+        (($this->sum($this->xVector) / $this->count) * 
+        ($this->sum($this->yVector) / $this->count))) / 
+		$this->dispersion('x');
     }
 
     /**
@@ -209,21 +166,21 @@ class PredictionBuilder {
      * Rxy = b * (sqrt(Dx) / sqrt(Dy))
      *
      * @param float $b
-     * 
-     * @return float
+     *
+	 * @return float
      */
-    private function corCoefficient ($b) {
-        return $b * (sqrt($this->xDispersion()) / sqrt($this->yDispersion()));
+    private function corCoefficient($b) {
+        return $b * (sqrt($this->dispersion('x')) / sqrt($this->dispersion('y')));
     }
 	
     /**
-     * Creating a linear model that fits the data.
+     * Creats a linear model that fits the data.
      * The resulting equation has the form: h(x) = a + bx
      *
      * @param float $a
      * @param float $b
-     * 
-     * @return callable
+     *
+	 * @return \Closure
      */
     private function createModel($a, $b)
     {
@@ -234,37 +191,37 @@ class PredictionBuilder {
 	
     /**
      * @param float $number
-     * 
-     * @return float
+     *
+	 * @return float
      */
     private function round_($number) {
-    	return round($number, 5);
+        return round($number, 5);
     }
 	
     /**
-     * Building the prediction of the expected value of y with the given x, based on a linear regression model.
+     * Builds the prediction of the expected value of y with the given x, based on a linear regression model.
      *
-     * @return object
+     * @return \stdClass
      *
-     * @throws \RuntimeException
+	 * @throws \InvalidArgumentException
      */
     public function build() {
-        // Check the number of observations in the given data set
+        // Check the number of observations in a given data set
         if ($this->count < 3) {
-            throw new \RuntimeException('The data set should contain a minimum of 3 observations.');
+            throw new \InvalidArgumentException('The data set should contain a minimum of 3 observations.');
         }
         
         $b = $this->round_($this->bSlope());
         $a = $this->round_($this->aIntercept($b));
         $model = $this->createModel($a, $b);
         $y = $this->round_($model($this->x));
-
+		
         $result = new \stdClass();
-        $result->ln_model = (string)($a.'+'.$b.'x');
+        $result->ln_model = (string) ($a.'+'.$b.'x');
         $result->cor = $this->round_($this->corCoefficient($b));
         $result->x = $this->x;
         $result->y = $y;
         
-        return $result;
+	    return $result;
     }
 }

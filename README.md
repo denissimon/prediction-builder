@@ -6,27 +6,20 @@ PredictionBuilder is a library for machine learning that builds predictions usin
 Requirements
 ------------
 
-This project requires [PHP 5.4 or higher](http://www.php.net/) because makes use of trait and short array syntax.
+This project requires [PHP 5.4 or higher](http://php.net) because makes use of trait and short array syntax.
 
 Installation
 ------------
 
-You can install the library by adding it as a dependency to your project's composer.json:
+You can install the library by [Composer](https://getcomposer.org). Add this to your project's composer.json:
 
 ``` json
 "require": {
     "denissimon/prediction-builder": "*"
 }
 ```
-  
-Then type the following in a terminal:
 
-``` bash
-cd path-to-your-project
-php composer.phar install
-```
-
-See [Composer](https://getcomposer.org/)'s documentation for the details.
+Then run `php composer.phar install` (or `composer install`).
 
 Example
 -------
@@ -58,6 +51,7 @@ The returned object has the following properties:
 
 `$result->y` predicted y value: 76.65
 
-###License
+License
+-------
 
 Licensed under the [MIT license](https://github.com/denissimon/prediction-builder/blob/master/LICENSE)
