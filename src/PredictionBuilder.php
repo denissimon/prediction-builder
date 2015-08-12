@@ -10,22 +10,22 @@
 namespace PredictionBuilder;
 
 trait readData {
-	
-	/**
+
+    /**
      * Reads the data from a given array
      * 
      * @param array $data
      *
-	 * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function readFromArray(array $data) {
-        $callback =
-        function ($v) use ($data) {
+        $callback = 
+        function ($v) {
             if ((!isset($v[0])) || (!isset($v[1]))) {
-                throw new \InvalidArgumentException('Mismatch in the number of x and y in a data set.');
+                throw new \InvalidArgumentException('Mismatch in the number of x and y in the dataset.');
             } else {
-            	$this->xVector[] = $v[0];
-            	$this->yVector[] = $v[1];
+                $this->xVector[] = $v[0];
+                $this->yVector[] = $v[1];
             }
         };    
         array_walk($data, $callback);
@@ -34,100 +34,99 @@ trait readData {
 
 class PredictionBuilder {
     
-	protected $x = 0;
+    protected $x = 0;
     protected $data = [];
     protected $xVector = [];
     protected $yVector = [];
     protected $count = 0;
     
     use readData;
-    
+
     /**
      * Constructor
      *
      * @param number $x
-     * @param array $data
+     * @param array  $data
      */
     public function __construct($x, array $data) {
         if (is_numeric($x)) 
-		    $this->x = (float) $x;
+            $this->x = (float) $x;
         if (is_array($data))
             $this->data = $data;
 
         $this->readFromArray($this->data);
         $this->count = count($this->data);
     }
-	
+
     /**
      * Magic overloading method
      * 
      * @param string $name
      * @param array  $arguments
      *
-	 * @throws \Exception when the method doesn't exist
+     * @throws \Exception when the method doesn't exist
      */
-    public function __call($name, $arguments)
-    {
+    public function __call($name, $arguments) {
         throw new \Exception("No such method exists: $name (".implode(', ', $arguments).")");
     }
-	
-	/**
-	 * @param number $v
+
+    /**
+     * @param number $v
      *
-	 * @return number
+     * @return number
      */
     private function square($v) {
         return $v * $v;
     }
-	
+
     /** 
      * Sum of the vector values
      * 
      * @param array $vector
      *
-	 * @return number
+     * @return number
      */
     private function sum(array $vector) {
-	    return array_reduce(
-	        $vector, 
-	        function($v, $w) { return $v + $w; }
-	    );
+        return array_reduce(
+            $vector, 
+            function($v, $w) { return $v + $w; }
+        );
     }
     
-	/** 
+    /** 
      * Sum of the vector squared values
      *
      * @param array $vector
      *
-	 * @return number
+     * @return number
      */
     private function sumSquared(array $vector) {
         return array_reduce(
-	        $vector, 
-	        function($v, $w) { return $v += $this->square($w); }
-	    );
+            $vector, 
+            function($v, $w) { return $v += $this->square($w); }
+        );
     }
-	
+
     /* 
      * Sum of the product of x and y
      *
      * @param array $data
      *
-	 * @return number
+     * @return number
      */
     private function sumXY(array $data) {
         return array_reduce(
-	        $data, 
-	        function($v, $w) { return $v += $w[0] * $w[1]; }
-	    );
+            $data,
+            function($v, $w) { return $v += $w[0] * $w[1]; }
+        );
     }
     
     /**
      * The dispersion
      * Dv = (Σv2 / N) - (Σv / N)2
      *
-	 * @param string $v 'x' or 'y'
-	 *
+     * @param string $v 'x' or 'y'
+     *
      * @return number
      */
     private function dispersion($v) {
@@ -138,10 +137,10 @@ class PredictionBuilder {
     /**
      * The intercept
      * a = (ΣY - b(ΣX)) / N
-	 *
-	 * @param float $b
      *
-	 * @return float
+     * @param float $b
+     *
+     * @return float
      */
     private function aIntercept($b) {
         return (float) ($this->sum($this->yVector) / $this->count) - 
@@ -158,7 +157,7 @@ class PredictionBuilder {
         return (float) (($this->sumXY($this->data) / $this->count) - 
         (($this->sum($this->xVector) / $this->count) * 
         ($this->sum($this->yVector) / $this->count))) / 
-		$this->dispersion('x');
+        $this->dispersion('x');
     }
 
     /**
@@ -167,12 +166,12 @@ class PredictionBuilder {
      *
      * @param float $b
      *
-	 * @return float
+     * @return float
      */
     private function corCoefficient($b) {
         return $b * (sqrt($this->dispersion('x')) / sqrt($this->dispersion('y')));
     }
-	
+
     /**
      * Creats a linear model that fits the data.
      * The resulting equation has the form: h(x) = a + bx
@@ -180,48 +179,47 @@ class PredictionBuilder {
      * @param float $a
      * @param float $b
      *
-	 * @return \Closure
+     * @return \Closure
      */
-    private function createModel($a, $b)
-    {
+    private function createModel($a, $b) {
         return function($x) use ($a, $b) { 
             return $a + $b*$x;
         };
     }
-	
+
     /**
      * @param float $number
      *
-	 * @return float
+     * @return float
      */
     private function round_($number) {
         return round($number, 5);
     }
-	
+
     /**
      * Builds the prediction of the expected value of y with the given x, based on a linear regression model.
      *
      * @return \stdClass
      *
-	 * @throws \InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function build() {
-        // Check the number of observations in a given data set
+        // Check the number of observations in a given dataset
         if ($this->count < 3) {
-            throw new \InvalidArgumentException('The data set should contain a minimum of 3 observations.');
+            throw new \InvalidArgumentException('The dataset should contain a minimum of 3 observations.');
         }
         
         $b = $this->round_($this->bSlope());
         $a = $this->round_($this->aIntercept($b));
         $model = $this->createModel($a, $b);
         $y = $this->round_($model($this->x));
-		
+        
         $result = new \stdClass();
         $result->ln_model = (string) ($a.'+'.$b.'x');
         $result->cor = $this->round_($this->corCoefficient($b));
         $result->x = $this->x;
         $result->y = $y;
         
-	    return $result;
+        return $result;
     }
 }
