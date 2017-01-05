@@ -123,7 +123,7 @@ class PredictionBuilder {
     
     /**
      * The dispersion
-     * Dv = (Σv2 / N) - (Σv / N)2
+     * Dv = (Σv² / N) - (Σv / N)²
      *
      * @param string $v 'x' or 'y'
      *
@@ -149,7 +149,7 @@ class PredictionBuilder {
     
     /**
      * The slope, or the regression coefficient
-     * b = ((ΣXY / N) - (ΣX / N)(ΣY / N)) / ((ΣX2 / N) - (ΣX / N)2)
+     * b = ((ΣXY / N) - (ΣX / N)(ΣY / N)) / ((ΣX² / N) - (ΣX / N)²)
      *
      * @return float
      */
@@ -162,7 +162,7 @@ class PredictionBuilder {
 
     /**
      * The Pearson's correlation coefficient
-     * Rxy = b * (sqrt(Dx) / sqrt(Dy))
+     * Rxy = b * (√Dx / √Dy)
      *
      * @param float $b
      *
