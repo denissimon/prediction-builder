@@ -32,7 +32,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $data = [[1,20],[2,70],[2,45],[3,81],[5,73],[6,80],[7,110]];
 $x = 4.5;
 
-// What is the expected y value with the given x value?
+// What is the expected y value for a given x value?
 try {
     $prediction = new PredictionBuilder($x, $data);
     $result = $prediction->build(); // y = 76.65

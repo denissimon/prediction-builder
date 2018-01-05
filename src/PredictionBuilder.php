@@ -197,7 +197,7 @@ class PredictionBuilder {
     }
 
     /**
-     * Builds the prediction of the expected value of y with the given x, based on a linear regression model.
+     * Builds a prediction of the expected value of y for a given x, based on a linear regression model.
      *
      * @return \stdClass
      *
