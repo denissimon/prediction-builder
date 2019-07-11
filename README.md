@@ -34,8 +34,8 @@ $x = 4.5;
 
 // What is the expected y value for a given x value?
 try {
-    $prediction = new PredictionBuilder($x, $data);
-    $result = $prediction->build(); // y = 76.65
+    $pb = new PredictionBuilder($x, $data);
+    $result = $pb->build(); // y = 76.65
 } catch (\Exception $e) {
     echo $e->getMessage(), "\n";
 }
@@ -54,4 +54,4 @@ The returned object has the following properties:
 License
 -------
 
-Licensed under the [MIT license](https://github.com/denissimon/prediction-builder/blob/master/LICENSE)
+Licensed under the [MIT License](https://github.com/denissimon/prediction-builder/blob/master/LICENSE)
