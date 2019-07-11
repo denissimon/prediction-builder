@@ -1,6 +1,10 @@
 PredictionBuilder
 =================
 
+[![Latest Stable Version](https://poser.pugx.org/denissimon/prediction-builder/v/stable.svg)](https://packagist.org/packages/denissimon/prediction-builder)
+[![Total Downloads](https://poser.pugx.org/denissimon/prediction-builder/downloads)](https://packagist.org/packages/denissimon/prediction-builder)
+[![License](https://poser.pugx.org/denissimon/prediction-builder/license.svg)](https://github.com/denissimon/prediction-builder/blob/master/LICENSE)
+
 PredictionBuilder is a library for machine learning that builds predictions using a linear regression.
 
 Requirements
