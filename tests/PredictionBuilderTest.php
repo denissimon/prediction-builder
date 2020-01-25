@@ -13,8 +13,8 @@ class PredictionBuilderTest extends TestCase
      * @dataProvider getResultData
      */
     public function testGetResult($x, $data, $expected_result) {
-        $pb = new PredictionBuilder($x, $data);
-        $result = $pb->build();
+        $prediction = new PredictionBuilder($x, $data);
+        $result = $prediction->build();
         
         $this->assertEquals($result->y, $expected_result);
     }
@@ -35,14 +35,15 @@ class PredictionBuilderTest extends TestCase
     public function testException($x, $data) {
         $this->expectException(InvalidArgumentException::class);
         
-        $pb = new PredictionBuilder($x, $data);
-        $result = $pb->build();
+        $prediction = new PredictionBuilder($x, $data);
+        $result = $prediction->build();
     }
         
     public function exceptionData() {
         return [
             [4.5, [[1,20],[2,70]]],
-            [4.5, [[1,20],[2,70],[2]]]
+            [4.5, [[1,20],[2,70],[2],[3,81],[5,73],[6,80],[7,110]]],
+            [4.5, [[1,20],[2,70],[],[3,81],[5,73],[6,80],[7,110]]]
         ];
     }
 }
