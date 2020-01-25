@@ -38,8 +38,8 @@ $x = 4.5;
 
 // What is the expected y value for a given x value?
 try {
-    $pb = new PredictionBuilder($x, $data);
-    $result = $pb->build(); // y = 76.65
+    $prediction = new PredictionBuilder($x, $data);
+    $result = $prediction->build(); // y = 76.65
 } catch (\Exception $e) {
     echo $e->getMessage(), "\n";
 }
