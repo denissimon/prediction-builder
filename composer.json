@@ -1,7 +1,7 @@
 {
 	"name":        "denissimon/prediction-builder",
 	"description": "A library for machine learning that builds predictions using a linear regression.",
-	"keywords":    ["prediction", "regression", "machine learning"],
+	"keywords":    ["prediction", "regression", "linear regression", "machine learning", "ml"],
 	"license":     "MIT",
 	"authors":     [{
 		"name":  "Denis Simon",
